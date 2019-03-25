@@ -1,8 +1,13 @@
 package sources
 
-class InstagramSource {
-  // Create a source of String using the generateInstagramJson function
-  // Update it  every n-seconds with  some simple generation logic
+import model.JsonData
 
-  // Use scheduler for pushing data to the Source. Maybe use Source.queue
+class InstagramSource extends DummySourceShape {
+  var numFollowers = 0
+  var numPosts = 0
+
+  override def generateData() = {
+    //generate everytime different arguments and update instance state
+    JsonData.generateInstagramJson(numFollowers, numPosts)
+  }
 }

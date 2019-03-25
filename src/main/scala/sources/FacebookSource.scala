@@ -1,10 +1,13 @@
 package sources
 
-class FacebookSource {
+import model.JsonData
 
+class FacebookSource extends DummySourceShape {
+  var numFriends = 0
+  var numPosts = 0
 
-  // Create a source of String using the generateFacebookJson function
-  // Update it  every n-seconds with  some simple generation logic
-
-  // Use scheduler for pushing data to the Source. Maybe use Source.queue
+  override def generateData() = {
+    //generate everytime different arguments and update instance state
+    JsonData.generateFacebookJson(numFriends, numPosts)
+  }
 }
