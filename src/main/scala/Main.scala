@@ -10,5 +10,5 @@ object Main extends App {
  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
 
- AggregatorGraph.init().throttle(1, 3.seconds).to(Sink.foreach(println)).run()
+ AggregatorGraph.init().throttle(1, 1.seconds).to(Sink.foreach(println)).run()
 }
