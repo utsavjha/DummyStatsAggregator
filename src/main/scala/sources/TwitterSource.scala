@@ -3,11 +3,11 @@ package sources
 import model.JsonData
 
 class TwitterSource extends DummySourceShape {
-  var numFollowers = 6
-  var numPosts = 77
+  val followerIncrementer = new Incrementer(3000)
+  val postIncrementer = new Incrementer(2000)
 
   override def generateData() = {
     //generate everytime different arguments and update instance state
-    JsonData.generateTwitterJson(numFollowers, numPosts)
+    JsonData.generateTwitterJson(followerIncrementer.get(), postIncrementer.get())
   }
 }
