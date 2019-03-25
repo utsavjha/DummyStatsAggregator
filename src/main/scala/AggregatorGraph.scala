@@ -1,26 +1,35 @@
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream._
-import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Merge, Sink, Source}
+import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Merge, Source}
 import model.{GenericEntry, ResultEntry}
 import sources.{FacebookSource, InstagramSource, TwitterSource}
 
 import scala.concurrent.ExecutionContextExecutor
 
-
-
-
 object AggregatorGraph {
   var twitterState: GenericEntry = GenericEntry(0, 0, "twitter")
   var facebookState: GenericEntry = GenericEntry(0, 0, "facebook")
   var instagramState: GenericEntry = GenericEntry(0, 0, "instagram")
+  var followerDistribution: Map[String, Float] = Map(("Facebook", 0), ("Instagram", 0), ("Twitter", 0))
 
+  def calculateFollowerDistribution(totalFollowers: Int){
+    if (totalFollowers != 0) {
+      followerDistribution = followerDistribution.updated("Facebook", facebookState.numFollowers.toFloat / totalFollowers)
+      followerDistribution = followerDistribution.updated("Instagram", instagramState.numFollowers.toFloat / totalFollowers)
+      followerDistribution = followerDistribution.updated("Twitter", twitterState.numFollowers.toFloat / totalFollowers)
+    }
+  }
 
-  def calculateResultState() = new ResultEntry(
-    twitterState.numFollowers + facebookState.numFollowers + instagramState.numFollowers,
-    twitterState.numPosts + facebookState.numPosts + instagramState.numPosts
-  )
+  def calculateResultState() = {
+    // update followerDistribution
+    val totalFollowers = twitterState.numFollowers + facebookState.numFollowers + instagramState.numFollowers
+    calculateFollowerDistribution(totalFollowers)
 
+    ResultEntry(totalFollowers,
+      twitterState.numPosts + facebookState.numPosts + instagramState.numPosts,
+      followerDistribution)
+  }
 
   def init()(implicit system: ActorSystem, mat: ActorMaterializer, context: ExecutionContextExecutor) = {
     Source
