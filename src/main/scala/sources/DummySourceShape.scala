@@ -4,7 +4,7 @@ import akka.stream.{Attributes, Outlet, SourceShape}
 import akka.stream.stage.{GraphStage, GraphStageLogic, OutHandler}
 
 abstract class DummySourceShape extends  GraphStage[SourceShape[String]] {
-    val out: Outlet[String] = Outlet("FbSource")
+    val out: Outlet[String] = Outlet("src")
 
 
     override val shape: SourceShape[String] = SourceShape(out)

@@ -5,7 +5,8 @@ object JsonData {
     s"""
        |{
        |"friends": $numFriends,
-       |"posts": $numPosts
+       |"posts": $numPosts,
+       |"source": "facebook"
        |}
     """.stripMargin
 
@@ -15,6 +16,7 @@ object JsonData {
        |{
        |"followers": $numFollowers,
        |"posts": $numPosts
+       |"source": "instagram"
        |}
     """.stripMargin
 
@@ -23,6 +25,7 @@ object JsonData {
        |{
        |"followers": $numFollowers,
        |"posts": $numPosts
+       |"source": "twitter"
        |}
     """.stripMargin
 }

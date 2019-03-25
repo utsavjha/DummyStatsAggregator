@@ -7,7 +7,6 @@ class Incrementer(threshold: Int) {
   val r = scala.util.Random
 
   def get(): Int = {
-    println(counter)
     counter += 1
 
     if (counter == threshold) {
