@@ -10,4 +10,5 @@ class InstagramSource extends DummySourceShape {
     //generate everytime different arguments and update instance state
     JsonData.generateInstagramJson(followerIncrementer.get(), postIncrementer.get())
   }
+
 }
