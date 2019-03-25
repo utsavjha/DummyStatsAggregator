@@ -1,8 +1,13 @@
 package sources
 
-class TwitterSource {
-  // Create a source of String using the generateTwitterJson function
-  // Update it  every n-seconds with  some simple generation logic
+import model.JsonData
 
-  // Use scheduler for pushing data to the Source. Maybe use Source.queue
+class TwitterSource extends DummySourceShape {
+  var numFollowers = 0
+  var numPosts = 0
+
+  override def generateData() = {
+    //generate everytime different arguments and update instance state
+    JsonData.generateTwitterJson(numFollowers, numPosts)
+  }
 }
