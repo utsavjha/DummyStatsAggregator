@@ -1,14 +1,12 @@
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, duration}
+import scala.concurrent.ExecutionContextExecutor
 
 object Main extends App {
  implicit val system = ActorSystem()
  implicit val mat = ActorMaterializer()
  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
- import duration._
-
 
 
 
