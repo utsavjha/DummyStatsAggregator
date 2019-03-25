@@ -1,13 +1,12 @@
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream._
-import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Merge, Sink, Source}
+import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Merge, Source}
 import model.{GenericEntry, ResultEntry}
+import parser.{Encoder, FollowersDecoder, FriendDecoder}
 import sources.{FacebookSource, InstagramSource, TwitterSource}
 
 import scala.concurrent.ExecutionContextExecutor
-
-
 
 
 object AggregatorGraph {
@@ -35,10 +34,12 @@ object AggregatorGraph {
 
         val end: UniformFanOutShape[ResultEntry, ResultEntry] = builder.add(new Broadcast[ResultEntry](1, false))
 
+        val decoderFlowFollowers: Flow[String, GenericEntry, NotUsed] = Flow[String].map(json => {
+          FollowersDecoder.decodeData(json).get
+        })
 
-        val encoderFlow: Flow[String, GenericEntry,  NotUsed] = Flow[String].map( json =>{
-          // USe real encoder here
-          GenericEntry(0, 0, "instagram")
+        val decoderFlowFriends: Flow[String, GenericEntry, NotUsed] = Flow[String].map(json => {
+          FriendDecoder.decodeData(json).get
         })
 
         val updateStateFlow: Flow[GenericEntry, ResultEntry, NotUsed] = Flow[GenericEntry].map(entry =>
@@ -52,14 +53,12 @@ object AggregatorGraph {
             case "instagram" =>
               instagramState = entry
               calculateResultState()
-        })
+          })
 
 
-        facebookSource ~> encoderFlow ~> merger ~> updateStateFlow ~> end
-        instagramSource ~> encoderFlow ~> merger
-        twitterSource ~> encoderFlow ~> merger
-
-
+        facebookSource ~> decoderFlowFriends ~> merger ~> updateStateFlow ~> end
+        instagramSource ~> decoderFlowFollowers ~> merger
+        twitterSource ~> decoderFlowFollowers ~> merger
 
         SourceShape(end.out(0))
       })

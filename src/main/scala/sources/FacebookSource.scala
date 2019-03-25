@@ -7,8 +7,7 @@ class FacebookSource extends DummySourceShape {
   val postIncrementer = new Incrementer(500)
 
   override def generateData() = {
-    //generate everytime different arguments and update instance state
-    val record = JsonData.generateFacebookJson(friendIncrementer.get(), postIncrementer.get())
-    record
+    JsonData.generateFacebookJson(friendIncrementer.get(), postIncrementer.get())
+
   }
 }
